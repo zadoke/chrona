@@ -29,13 +29,14 @@ struct TrainStop {
     delay_info: String,
 }
 
-fn to_title_case(s: &str) -> String {
-    s.split(|c| c == ' ' || c == '-')
+fn to_title_case(input_string: &str) -> String {
+    input_string
+        .split(|character| character == ' ' || character == '-' || character =='.')
         .map(|word| {
-            let mut c = word.chars();
-            match c.next() {
+            let mut characters = word.chars();
+            match characters.next() {
                 None => String::new(),
-                Some(f) => f.to_uppercase().collect::<String>() + c.as_str().to_lowercase().as_str(),
+                Some(first_character) => first_character.to_uppercase().collect::<String>() + characters.as_str().to_lowercase().as_str(),
             }
         })
         .collect::<Vec<_>>()
@@ -129,7 +130,7 @@ async fn fetch_train_data(train_number: &i32) -> Result<Value, Box<dyn std::erro
 
 #[tokio::main]
 async fn main() {
-    match fetch_train_data(&18308).await { //temporary number for testing
+    match fetch_train_data(&18012).await { //temporary number for testing
         Ok(train_data) => println!("{}", train_data),
         Err(e) => eprintln!("An error occurred: {}", e),
     }
