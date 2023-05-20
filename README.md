@@ -2,11 +2,22 @@
 
 This is the Rust backend for CPTrainBot, a Discord bot that retrieves train schedules and information from Infrastruturas de Portugal and displays them on Discord.
 
-## Getting Started
+## Prerequisites
 
-To get started with the backend of CPTrainBot, you'll need to have Rust installed on your system. You can find instructions on how to install Rust [here](https://www.rust-lang.org/tools/install).
+To run the backend of CPTrainBot, you'll need to have Rust installed on your system. You can find instructions on how to install Rust [here](https://www.rust-lang.org/tools/install).
 
-Once you have Rust installed, you can clone this repository and navigate to the backend directory. From there, you can run `cargo build` to build the project and `cargo run` to start the backend.
+## Installation
+
+To install the backend of CPTrainBot, follow these steps:
+
+1. Clone this repository.
+2. Run `cargo build` to build the project.
+
+In the near future, a Docker image that combines both the frontend and backend components of CPTrainBot will be made available for easier deployment.
+
+## Running the Backend
+
+To start the backend of CPTrainBot, run `cargo run` in the project root. The backend server will start and expose its API on port 8000.
 
 ## Usage
 
