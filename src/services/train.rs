@@ -1,37 +1,12 @@
 use chrono::prelude::*;
 use chrono_tz::Europe::Lisbon;
-use reqwest;
+use reqwest::Client;
 use serde_json::{Value, json};
-use serde::{Deserialize, Serialize};
 use std::error::Error;
+
 use crate::utils::to_title_case;
-
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct TrainData {
-    arrival_time: String,
-    departure_time: String,
-    destination: String,
-    duration: String,
-    stops: Vec<TrainStop>,
-    operator: String,
-    origin: String,
-    status: String,
-    service_type: String,
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct TrainStop {
-    train_passed: bool,
-    scheduled_time: String,
-    node_id: i32,
-    station_name: String,
-    delay_info: String,
-}
-
-
+use crate::models::train::TrainData;
+use crate::models::train::TrainStop;
 
 //This function transforms the train data from the API response into a more readable form
 fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>> {
@@ -101,17 +76,17 @@ fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>>
 }
 
 // This function fetches train data from the API using the train number and current date
-pub async fn fetch_train_data(train_number: &i32) -> Result<Value, Box<dyn Error>> {
+pub async fn fetch_train_data(client: &Client, train_number: &i32) -> Result<Value, Box<dyn Error>> {
     // Get current date in Lisbon timezone
     let current_date = Utc::now().with_timezone(&Lisbon).format("%Y-%m-%d").to_string();
 
     // Fetch train data from API using train number and current date
     let url = format!("https://servicos.infraestruturasdeportugal.pt/negocios-e-servicos/horarios-ncombio/{}/{}", train_number, current_date);
-    let response = reqwest::get(url).await?.json::<Value>().await?;
+    let response = client.get(url).send().await?.json::<Value>().await?;
 
     // Check if the train exists
     if response["response"]["DataHoraDestino"].is_null() {
-        Ok(json!({ "trainNotFound": true, "message": "O comboio não foi encontrado." })) // Needs reworking
+        Ok(json!({ "error": "Train not found", "details": "O comboio não foi encontrado." })) // Needs reworking
     } else {
         transform_train_data(&response).and_then(|train_data| serde_json::to_value(train_data).map_err(|e| e.into()))
     }

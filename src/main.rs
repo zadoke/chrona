@@ -1,29 +1,31 @@
-use axum::{extract::Path , response::IntoResponse, routing::get , Json , Router};
-use crate::train::fetch_train_data;
-use serde_json::json;
+use axum;
+use reqwest::Client;
+use std::sync::Arc;
+use std::env;
 
-mod train;
-mod utils;
+use cptrain_bot_backend::app::create_app;
 
-async fn train_handler(Path(train_number): Path<i32>) -> impl IntoResponse {
-    match fetch_train_data(&train_number).await {
-        Ok(train_data) => Json(train_data),
-        Err(e) => {
-            eprintln!("Error fetching train data: {:?}", e);
-            let error_response = json!({
-                "error": "Error fetching train data",
-                "details": format!("{:?}", e)
-            });
-            Json(error_response)
-        }
-    }
-}
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/train/:train_number", get(train_handler));
-    println!("CPTrainBot backend started sucessfully!");
-    axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let client = Arc::new(Client::new());
+    let app = create_app(client.clone());
+    let server_port = env::var("SERVER_PORT").unwrap_or_else(|_| {
+        eprintln!("Warning: SERVER_PORT environment variable not set. Using default value of 8000.");
+        "8000".to_string()
+    });
+    let server_address = format!("0.0.0.0:{}", server_port);
+
+    match server_address.parse() {
+        Ok(addr) => {
+            let server = axum::Server::bind(&addr)
+                .serve(app.into_make_service());
+            println!("CPTrainBot Backend started successfully on {}", addr);
+            if let Err(e) = server.await {
+                eprintln!("Error running server: {:?}", e);
+            }
+        }
+        Err(e) => {
+            eprintln!("Error parsing server address: {}", e);
+        }
+    }
 }
