@@ -33,6 +33,8 @@ The backend exposes several endpoints for retrieving train schedules and informa
 
 - `/train/:trainnumber`: Retrieves information about a specific train. This endpoint returns a JSON object containing information about the train's arrival time, departure time, destination, duration, operator, origin, service type, status, and stops.
 
+- `/station/search/:query`: This endpoint returns a JSON object containing a vector of stations that match the given query. Each station in the vector has a name and an ID.
+
 Documentation for these endpoints is coming soon.
 
 ## Contributing
