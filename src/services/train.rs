@@ -23,7 +23,7 @@ fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>>
                     .as_str()
                     .ok_or("HoraProgramada is not a string")?
                     .to_string(),
-                node_id: stop["NodeID"]
+                station_id: stop["NodeID"]
                     .as_i64()
                     .ok_or("NodeID is not an i64")? as i32,
                 station_name: to_title_case(stop["NomeEstacao"]
@@ -32,7 +32,8 @@ fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>>
                 ),
                 delay_info: stop["Observacoes"]
                     .as_str()
-                    .ok_or("Observacoes is not a string")?
+                    .map(|s| if s.is_empty() { "Sem observações" } else { s })
+                    .unwrap_or("Sem observações")
                     .to_string(),
             })
         })
@@ -66,7 +67,8 @@ fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>>
         ),
         status: train_data["response"]["SituacaoComboio"]
             .as_str()
-            .ok_or("SituacaoComboio is not a string")?
+            .map(|s| if s.is_empty() { "Sem observações" } else { s })
+            .unwrap_or("Sem observações")
             .to_string(),
         service_type: train_data["response"]["TipoServico"]
             .as_str()

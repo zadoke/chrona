@@ -19,7 +19,7 @@ pub struct TrainData {
 pub struct TrainStop {
     pub train_passed: bool,
     pub scheduled_time: String,
-    pub node_id: i32,
+    pub station_id: i32,
     pub station_name: String,
     pub delay_info: String,
 }
