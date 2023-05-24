@@ -27,15 +27,9 @@ The backend uses a RESTful API to expose several endpoints for retrieving train 
 
 For example, to retrieve information about a specific train, you can send a GET request to the `/train/:trainnumber` endpoint, where `:trainnumber` is the number of the train you want to retrieve information about.
 
-### (Current!) Endpoints
+### Endpoints
 
-The backend exposes several endpoints for retrieving train schedules and information:
-
-- `/train/:trainnumber`: Retrieves information about a specific train. This endpoint returns a JSON object containing information about the train's arrival time, departure time, destination, duration, operator, origin, service type, status, and stops.
-
-- `/station/search/:query`: This endpoint returns a JSON object containing a vector of stations that match the given query. Each station in the vector has a name and an ID.
-
-Documentation for these endpoints is coming soon.
+You can check the current endpoints in the [wiki!](https://github.com/zadoke/CPTrainBot-backend/wiki/Endpoints)
 
 ## Contributing
 
