@@ -10,47 +10,45 @@ use crate::models::train::TrainStop;
 
 //This function transforms the train data from the API response into a more readable form
 fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>> {
-    let stops = train_data["response"]["NodesPassagemComboio"]
+    let mut stops = Vec::new();
+    for stop in train_data["response"]["NodesPassagemComboio"]
         .as_array()
         .ok_or("NodesPassagemComboio is not an array")?
         .iter()
-        .map(|stop| -> Result<TrainStop, Box<dyn Error>> {
-            Ok(TrainStop {
-                train_passed: stop["ComboioPassou"]
-                    .as_bool()
-                    .ok_or("ComboioPassou is not a bool")?,
-                scheduled_time: stop["HoraProgramada"]
+    {
+        stops.push(TrainStop {
+            train_passed: stop["ComboioPassou"]
+                .as_bool()
+                .ok_or("ComboioPassou is not a bool")?,
+            scheduled_time: stop["HoraProgramada"]
+                .as_str()
+                .ok_or("HoraProgramada is not a string")?
+                .to_string(),
+            station_id: stop["NodeID"].as_i64().ok_or("NodeID is not an i64")? as i32,
+            station_name: to_title_case(
+                stop["NomeEstacao"]
                     .as_str()
-                    .ok_or("HoraProgramada is not a string")?
-                    .to_string(),
-                station_id: stop["NodeID"]
-                    .as_i64()
-                    .ok_or("NodeID is not an i64")? as i32,
-                station_name: to_title_case(stop["NomeEstacao"]
-                    .as_str()
-                    .ok_or("NomeEstacao is not a string")?
-                ),
-                delay_info: stop["Observacoes"]
-                    .as_str()
-                    .map(|s| if s.is_empty() { "Sem observações" } else { s })
-                    .unwrap_or("Sem observações")
-                    .to_string(),
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+                    .ok_or("NomeEstacao is not a string")?,
+            ),
+            delay_info: stop["Observacoes"]
+                .as_str()
+                .map(|s| if s.is_empty() { "Sem observações" } else { s })
+                .unwrap_or("Sem observações")
+                .to_string(),
+        });
+    }
 
     Ok(TrainData {
         arrival_time: train_data["response"]["DataHoraDestino"]
-        .as_str()
-        .ok_or("DataHoraDestino is not a string")?
-        .to_string(),
-       departure_time: train_data["response"]["DataHoraOrigem"]
-        .as_str()
-        .ok_or("DataHoraOrigem is not a string")?
-        .to_string(),
-        destination: to_title_case(train_data["response"]["Destino"]
             .as_str()
-            .ok_or("Destino is not a string")?
+            .ok_or("DataHoraDestino is not a string")?
+            .to_string(),
+        departure_time: train_data["response"]["DataHoraOrigem"]
+            .as_str()
+            .ok_or("DataHoraOrigem is not a string")?
+            .to_string(),
+        destination: to_title_case(
+            train_data["response"]["Destino"].as_str().ok_or("Destino is not a string")?,
         ),
         duration: train_data["response"]["DuracaoViagem"]
             .as_str()
@@ -61,9 +59,8 @@ fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>>
             .as_str()
             .ok_or("Operador is not a string")?
             .to_string(),
-        origin: to_title_case(train_data["response"]["Origem"]
-            .as_str()
-            .ok_or("Origem is not a string")?
+        origin: to_title_case(
+            train_data["response"]["Origem"].as_str().ok_or("Origem is not a string")?,
         ),
         status: train_data["response"]["SituacaoComboio"]
             .as_str()
