@@ -1,0 +1,123 @@
+use crate::models::train::TrainData;
+use crate::models::train::TrainStop;
+use crate::services::train::transform_train_data;
+
+use serde_json::json;
+
+#[test]
+fn test_transform_train_data() {
+    let train_data = json!({
+        "response": {
+            "DataHoraDestino": "20-05-2023 12:30:00",
+            "DataHoraOrigem": "20-05-2023 09:32:00",
+            "Destino": "LISBOA-APOLÓNIA",
+            "DuracaoViagem": "02:58",
+            "NodesPassagemComboio": [
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "09:32",
+                    "NodeID": 9402006,
+                    "NomeEstacao": "PORTO-CAMPANHÃ",
+                    "Observacoes": ""
+                },
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "09:36",
+                    "NodeID": 9439164,
+                    "NomeEstacao": "GAIA-DEVESAS",
+                    "Observacoes": ""
+                },
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "10:18",
+                    "NodeID": 9438000,
+                    "NomeEstacao": "AVEIRO",
+                    "Observacoes": ""
+                },
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "10:44",
+                    "NodeID": 9436004,
+                    "NomeEstacao": "COIMBRA-B",
+                    "Observacoes": ""
+                },
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "12:22",
+                    "NodeID": 9431039,
+                    "NomeEstacao": "LISBOA-ORIENTE",
+                    "Observacoes": ""
+                },
+                {
+                    "ComboioPassou": true,
+                    "HoraProgramada": "12:30",
+                    "NodeID": 9430007,
+                    "NomeEstacao": "LISBOA-APOLÓNIA",
+                    "Observacoes": ""
+                }
+            ],
+            "Operador": "CP LONGO CURSO",
+            "Origem": "PORTO-CAMPANHÃ",
+            "SituacaoComboio": "Realizado",
+            "TipoServico": "ALFA"
+        }
+    });
+
+    let expected = TrainData {
+        arrival_time: String::from("20-05-2023 12:30:00"),
+        departure_time: String::from("20-05-2023 09:32:00"),
+        destination: String::from("Lisboa Apolónia"),
+        duration: String::from("02:58"),
+        stops: vec![
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("09:32"),
+                station_id: 9402006,
+                station_name: String::from("Porto Campanhã"),
+                delay_info: String::from("Sem observações")
+            },
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("09:36"),
+                station_id: 9439164,
+                station_name: String::from("Gaia Devesas"),
+                delay_info: String::from("Sem observações")
+            },
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("10:18"),
+                station_id: 9438000,
+                station_name: String::from("Aveiro"),
+                delay_info: String::from("Sem observações")
+            },
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("10:44"),
+                station_id: 9436004,
+                station_name: String::from("Coimbra B"),
+                delay_info: String::from("Sem observações")
+            },
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("12:22"),
+                station_id: 9431039,
+                station_name: String::from("Lisboa Oriente"),
+                delay_info: String::from("Sem observações")
+            },
+            TrainStop {
+                train_passed: true,
+                scheduled_time: String::from("12:30"),
+                station_id: 9430007,
+                station_name: String::from("Lisboa Apolónia"),
+                delay_info: String::from("Sem observações")
+            }
+        ],
+        operator: String::from("CP LONGO CURSO"),
+        origin: String::from("Porto Campanhã"),
+        status: String::from("Realizado"),
+        service_type: String::from("ALFA")
+    };
+
+    let result = transform_train_data(&train_data).unwrap();
+    assert_eq!(result, expected);
+}

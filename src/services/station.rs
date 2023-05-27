@@ -8,8 +8,8 @@ use crate::utils::to_title_case;
 
 fn transform_stations(station_data: &Value) -> Result<Vec<Station>, Box<dyn Error>>{
     let response = station_data["response"]
-    .as_array()
-    .ok_or("Invalid response")?;
+        .as_array()
+        .ok_or("Invalid response")?;
     let stations: Vec<Station> = response
         .iter()
         .take(25)
@@ -23,7 +23,6 @@ fn transform_stations(station_data: &Value) -> Result<Vec<Station>, Box<dyn Erro
 
 
 pub async fn fetch_stations(client: &Client, query: &String) -> Result<Value, Box<dyn Error>> {
-
     // Fetch train data from API using train number and current date
     let url = format!("https://servicos.infraestruturasdeportugal.pt/negocios-e-servicos/estacao-nome/{}", query);
     let response = client.get(url).send().await?.json::<Value>().await?;

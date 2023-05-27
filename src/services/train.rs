@@ -9,7 +9,7 @@ use crate::models::train::TrainData;
 use crate::models::train::TrainStop;
 
 //This function transforms the train data from the API response into a more readable form
-fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>> {
+pub fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Error>> {
     let mut stops = Vec::new();
     for stop in train_data["response"]["NodesPassagemComboio"]
         .as_array()
