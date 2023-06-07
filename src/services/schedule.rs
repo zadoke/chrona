@@ -52,7 +52,8 @@ fn map_schedule(schedule_data: &Value) -> Result<Schedule, Box<dyn Error>> {
                     origin_station_name,
                     operator,
                     service_type,
-                    info
+                    info,
+                    carriages: if train_number_1 != train_number_2 {8} else {4},
                 });
             }
         }

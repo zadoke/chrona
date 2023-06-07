@@ -22,4 +22,5 @@ pub struct Train {
     pub operator: String,
     pub service_type: String,
     pub info: String,
+    pub carriages: i32,
 }
