@@ -31,10 +31,22 @@ pub fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Err
                     .ok_or("NomeEstacao is not a string")?,
             ),
             delay_info: stop["Observacoes"]
-                .as_str()
-                .map(|s| if s.is_empty() { "Sem observações" } else { s })
-                .unwrap_or("Sem observações")
-                .to_string(),
+            .as_str()
+            .map(|s| {
+                if s.contains("Hora Prevista") {
+                    s.split(':')
+                        .skip(1)
+                        .take(2)
+                        .map(|time| time.trim().to_string())
+                        .collect::<Vec<String>>()
+                        .join(":")
+                } else if s.is_empty() {
+                    "Sem observações".to_string()
+                } else {
+                    s.to_string()
+                }
+            })
+            .unwrap_or("Sem observações".to_string()),
         });
     }
 
@@ -64,8 +76,8 @@ pub fn transform_train_data(train_data: &Value) -> Result<TrainData, Box<dyn Err
         ),
         status: train_data["response"]["SituacaoComboio"]
             .as_str()
-            .map(|s| if s.is_empty() { "Sem observações" } else { s })
-            .unwrap_or("Sem observações")
+            .map(|s| if s.is_empty() { "Em circulação" } else { s })
+            .unwrap_or("Em circulação")
             .to_string(),
         service_type: train_data["response"]["TipoServico"]
             .as_str()
