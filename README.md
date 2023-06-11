@@ -13,7 +13,7 @@ To install the backend of CPTrainBot, follow these steps:
 1. Clone this repository.
 2. Run `cargo build` to build the project.
 
-In the near future, a Docker image that combines both the frontend and backend components of CPTrainBot will be made available for easier deployment.
+You can also deploy the backend and frontend using docker compose. Instructions are [here](https://github.com/zadoke/CPTrainBot#installation)
 
 ## Running the Backend
 
