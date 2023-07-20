@@ -38,7 +38,18 @@ fn map_schedule(schedule_data: &Value) -> Result<Schedule, Box<dyn Error>> {
                 let destination_station_name = to_title_case(train["NomeEstacaoDestino"].as_str().ok_or("Missing NomeEstacaoDestino")?);
                 let origin_station_name = to_title_case(train["NomeEstacaoOrigem"].as_str().ok_or("Missing NomeEstacaoOrigem")?);
                 let operator = train["Operador"].as_str().ok_or("Missing Operador")?.to_string();
-                let service_type = train["TipoServico"].as_str().ok_or("Missing TipoServico")?.to_string();
+                let mut service_type = train["TipoServico"].as_str().ok_or("Missing TipoServico")?.to_string();
+                service_type = match service_type.as_str(){
+                    "IC" => "Intercidades",
+                    "ALFA" => "Alfa Pendular",
+                    "REGIONAL" => "Regional",
+                    "URB|SUBUR" => "Suburbano",
+                    "IR" => "InterRegional",
+                    "MERCADORIAS" => "Carga",
+                    "SERVIÇO" => "Serviço",
+                    "ESPECIAL" => "Especial",
+                    _ => "Desconhecido"
+                }.to_string();
                 let info = train["Observacoes"].as_str().map(|s| if s.is_empty() { "Sem atraso" } else { s })
                 .unwrap_or("Sem atraso").to_string();
                 trains.push(Train {
