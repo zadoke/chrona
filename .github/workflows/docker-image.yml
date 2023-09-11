@@ -1,18 +1,24 @@
-name: Docker Image build
+name: Docker Image CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    push:
+        branches: ['main']
+    pull_request:
+        branches: ['main']
 
 jobs:
+    build:
+        runs-on: ubuntu-latest
 
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag cptrainbot:backend
+        steps:
+            - uses: actions/checkout@v3
+            - name: docker login
+              env:
+                  DOCKER_USER: ${{secrets.DOCKER_USER}}
+                  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+              run: |
+                  echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            - name: Build the Docker image
+              run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/cptrainbot:backend
+            - name: Docker Push
+              run: docker push ${{secrets.DOCKER_USER}}/cptrainbot:backend
