@@ -1,35 +1,50 @@
-# CPTrainBot Backend
+# chrona
 
-This is the Rust backend for CPTrainBot, a Discord bot that retrieves train schedules and information from Infrastruturas de Portugal and displays them on Discord.
+chrona is a Rust-based service/backend designed for interfacing with the Infrastruturas de Portugal API. Its primary function is to retrieve, process, and reformat train schedule and information data into a format that is easier for developers to work with the API.
 
-## Prerequisites
+## Get Started
 
-To run the backend of CPTrainBot, you'll need to have Rust installed on your system. You can find instructions on how to install Rust [here](https://www.rust-lang.org/tools/install).
+There are 3 ways you can run chrona:
 
-## Installation
+## 1. Use Docker
 
-To install the backend of CPTrainBot, follow these steps:
+The docker image for chrona is hosted on [Docker Hub](https://hub.docker.com/repository/docker/zadoke/chrona/)
 
-1. Clone this repository.
-2. Run `cargo build` to build the project.
+To run it, you can run the following command:
 
-You can also deploy the backend and frontend using docker compose. Instructions are [here](https://github.com/zadoke/CPTrainBot#installation)
+`docker run -p 8000:8000 zadoke/chrona`
 
-## Running the Backend
+You can also use the SERVER_PORT environment variable to specify the port number on the container. For example, the following command will run chrona on port 9000 on the container and map it to port 8000 on the host:
 
-To start the backend of CPTrainBot, run `cargo run` in the project root. The backend server will start and expose its API on port 8000.
+`docker run -p 8000:9000 -e SERVER_PORT=9000 zadoke/chrona`
+
+## 2. Run locally
+
+To run locally, you'll need to have Rust installed on your system. You can find instructions on how to install Rust [here](https://www.rust-lang.org/tools/install).
+
+Clone the repository and run:
+
+`cargo run`
+
+The server will then be listening on http://0.0.0.0:8000.
+
+You can change the default port by modfiying the SERVER_PORT environment variable.
+
+## 3. Deploy to Kubernetes
+
+Refer to [deployments!](https://github.com/zadoke/chrona/tree/main/deployments)
 
 ## Usage
 
-The backend of CPTrainBot is responsible for retrieving train schedules and information from Infrastruturas de Portugal. It communicates with the Discord bot to provide this information to users.
+chrona's core responsibility is to facilitate the retrieval and transformation of train schedule and information data sourced from Infrastruturas de Portugal. Its primary audience includes applications requiring streamlined access to this data.
 
-The backend uses a RESTful API to expose several endpoints for retrieving train schedules and information. These endpoints can be accessed by sending HTTP requests to the appropriate URL.
+chrona uses a RESTful API to expose several endpoints for retrieving train schedules and information. These endpoints can be accessed by sending HTTP requests to the appropriate URL.
 
 For example, to retrieve information about a specific train, you can send a GET request to the `/train/:trainnumber` endpoint, where `:trainnumber` is the number of the train you want to retrieve information about.
 
 ### Endpoints
 
-You can check the current endpoints in the [wiki!](https://github.com/zadoke/CPTrainBot-backend/wiki/Endpoints)
+You can check the current endpoints in the [wiki!](https://github.com/zadoke/chrona/wiki/Endpoints)
 
 ## Contributing
 

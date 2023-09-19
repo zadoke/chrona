@@ -1,6 +1,6 @@
 FROM rust:latest
 
-WORKDIR /usr/src/cptrainbot-backend
+WORKDIR /usr/src/chrona
 COPY . .
 
 RUN cargo build --release

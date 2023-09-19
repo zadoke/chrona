@@ -1,5 +1,5 @@
 [package]
-name = "cptrain_bot_backend"
+name = "chrona"
 version = "0.0.1"
 edition = "2021"
 
