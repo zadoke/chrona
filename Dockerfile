@@ -10,7 +10,7 @@ RUN cargo build --release
 FROM debian:bookworm-slim
 
 # Install libssl
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/chrona
 
