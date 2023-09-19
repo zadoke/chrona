@@ -27,4 +27,4 @@ jobs:
                   context: .
                   platforms: linux/amd64,linux/arm64
                   push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/chrona:latest
+                  tags: ${{ secrets.DOCKER_USER }}/chrona:latest
