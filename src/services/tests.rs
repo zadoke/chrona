@@ -1,11 +1,10 @@
-use crate::models::train::TrainData;
-use crate::models::train::TrainStop;
-use crate::services::train::transform_train_data;
+use crate::models::train::Train;
+use crate::models::train::Stops;
 
 use serde_json::json;
 
 #[test]
-fn test_transform_train_data() {
+fn test_serialize_train_data() {
     let train_data = json!({
         "response": {
             "DataHoraDestino": "20-05-2023 12:30:00",
@@ -63,48 +62,48 @@ fn test_transform_train_data() {
         }
     });
 
-    let expected = TrainData {
+    let expected = Train {
         arrival_time: String::from("20-05-2023 12:30:00"),
         departure_time: String::from("20-05-2023 09:32:00"),
         destination: String::from("Lisboa Apolónia"),
         duration: String::from("02:58"),
         stops: vec![
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("09:32"),
                 station_id: 9402006,
                 station_name: String::from("Porto Campanhã"),
                 delay_info: String::from("Sem observações")
             },
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("09:36"),
                 station_id: 9439164,
                 station_name: String::from("Gaia Devesas"),
                 delay_info: String::from("Sem observações")
             },
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("10:18"),
                 station_id: 9438000,
                 station_name: String::from("Aveiro"),
                 delay_info: String::from("Sem observações")
             },
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("10:44"),
                 station_id: 9436004,
                 station_name: String::from("Coimbra B"),
                 delay_info: String::from("Sem observações")
             },
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("12:22"),
                 station_id: 9431039,
                 station_name: String::from("Lisboa Oriente"),
                 delay_info: String::from("Sem observações")
             },
-            TrainStop {
+            Stops {
                 train_passed: true,
                 scheduled_time: String::from("12:30"),
                 station_id: 9430007,
@@ -115,9 +114,9 @@ fn test_transform_train_data() {
         operator: String::from("CP LONGO CURSO"),
         origin: String::from("Porto Campanhã"),
         status: String::from("Realizado"),
-        service_type: String::from("ALFA")
+        service_type: String::from("Alfa Pendular")
     };
 
-    let result = transform_train_data(&train_data).unwrap();
+    let result = Train::deserialize_train(&train_data).unwrap();
     assert_eq!(result, expected);
 }

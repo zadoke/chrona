@@ -1,5 +1,6 @@
 use crate::utils::missing_field_error;
 use crate::utils::to_title_case;
+use crate::utils::map_service_type;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::error::Error;
@@ -71,20 +72,6 @@ struct Train {
 
 impl Train {
     fn from_value(train: &Value) -> Result<Train, Box<dyn Error>> {
-        fn map_service_type(service_type: &str) -> Result<String, Box<dyn Error>> {
-            match service_type {
-                "IC" => Ok("Intercidades".to_string()),
-                "ALFA" => Ok("Alfa Pendular".to_string()),
-                "REGIONAL" => Ok("Regional".to_string()),
-                "URB|SUBUR" => Ok("Suburbano".to_string()),
-                "IR" => Ok("InterRegional".to_string()),
-                "MERCADORIAS" => Ok("Carga".to_string()),
-                "SERVIÇO" => Ok("Serviço".to_string()),
-                "ESPECIAL" => Ok("Especial".to_string()),
-                _ => Ok("Desconhecido".to_string()),
-            }
-        }
-
         fn map_info(info: Option<&str>) -> Result<String, Box<dyn Error>> {
             match info {
                 Some(s) if !s.is_empty() => Ok(s.to_string()),
