@@ -62,7 +62,10 @@ fn test_serialize_train_data() {
         }
     });
 
+    let id = 550;
+
     let expected = Train {
+        id,
         arrival_time: String::from("20-05-2023 12:30:00"),
         departure_time: String::from("20-05-2023 09:32:00"),
         destination: String::from("Lisboa Apolónia"),
@@ -71,42 +74,42 @@ fn test_serialize_train_data() {
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("09:32"),
-                station_id: 9402006,
+                id: 9402006,
                 station_name: String::from("Porto Campanhã"),
                 delay_info: String::from("Sem observações")
             },
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("09:36"),
-                station_id: 9439164,
+                id: 9439164,
                 station_name: String::from("Gaia Devesas"),
                 delay_info: String::from("Sem observações")
             },
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("10:18"),
-                station_id: 9438000,
+                id: 9438000,
                 station_name: String::from("Aveiro"),
                 delay_info: String::from("Sem observações")
             },
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("10:44"),
-                station_id: 9436004,
+                id: 9436004,
                 station_name: String::from("Coimbra B"),
                 delay_info: String::from("Sem observações")
             },
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("12:22"),
-                station_id: 9431039,
+                id: 9431039,
                 station_name: String::from("Lisboa Oriente"),
                 delay_info: String::from("Sem observações")
             },
             Stops {
                 train_passed: true,
                 scheduled_time: String::from("12:30"),
-                station_id: 9430007,
+                id: 9430007,
                 station_name: String::from("Lisboa Apolónia"),
                 delay_info: String::from("Sem observações")
             }
@@ -117,6 +120,6 @@ fn test_serialize_train_data() {
         service_type: String::from("Alfa Pendular")
     };
 
-    let result = Train::deserialize_train(&train_data).unwrap();
+    let result = Train::deserialize_train(&train_data, &id).unwrap();
     assert_eq!(result, expected);
 }

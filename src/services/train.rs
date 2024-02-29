@@ -15,13 +15,13 @@ fn generate_url(train_number: &i32) -> String {
     format!("https://servicos.infraestruturasdeportugal.pt/negocios-e-servicos/horarios-ncombio/{}/{}", train_number, current_date)
 }
 
-pub async fn fetch_train_data(client: &Client,train_number: &i32) -> Result<Value, Box<dyn Error>> {
+pub async fn fetch_train_data(client: &Client, train_number: &i32) -> Result<Value, Box<dyn Error>> {
     let url = generate_url(train_number);
     let response = client.get(&url).send().await?.json::<Value>().await?;
-    handle_response(response)
+    handle_response(response, train_number)
 }
 
-fn handle_response(response: Value) -> Result<Value, Box<dyn Error>> {
+fn handle_response(response: Value, train_number: &i32) -> Result<Value, Box<dyn Error>> {
     if let Some(response) = response["response"].as_object() {
         if response.values().all(|v| v.is_null()) { // The API returns null on all fields when it can't find a train
             return Ok(json!({
@@ -32,7 +32,7 @@ fn handle_response(response: Value) -> Result<Value, Box<dyn Error>> {
     }
 
     // Convert the response to a Train object
-    let train_result = Train::deserialize_train(&response);
+    let train_result = Train::deserialize_train(&response, train_number);
 
     // If successful, convert the Train object to a JSON Value
     let json_result = train_result.and_then(|train_data| {

@@ -8,6 +8,7 @@ use std::error::Error;
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Train {
+    pub id: i32,
     pub arrival_time: String,
     pub departure_time: String,
     pub destination: String,
@@ -20,7 +21,7 @@ pub struct Train {
 }
 
 impl Train {
-    pub fn deserialize_train(train_data: &Value) -> Result<Train, Box<dyn Error>> {
+    pub fn deserialize_train(train_data: &Value, train_number: &i32) -> Result<Train, Box<dyn Error>> {
         let mut stops = Vec::new();
         if let Some(stops_data) = train_data["response"]["NodesPassagemComboio"].as_array() {
             for stop in stops_data.iter() {
@@ -31,6 +32,7 @@ impl Train {
         }
 
         Ok(Train {
+            id : *train_number,
             arrival_time: train_data["response"]["DataHoraDestino"]
                 .as_str()
                 .ok_or_else(|| missing_field_error("DataHoraDestino"))?
@@ -70,9 +72,9 @@ impl Train {
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Stops {
+    pub id: i32,
     pub train_passed: bool,
     pub scheduled_time: String,
-    pub station_id: i32,
     pub station_name: String,
     pub delay_info: String,
 }
@@ -102,7 +104,7 @@ impl Stops {
                 .as_str()
                 .ok_or("HoraProgramada is not a string")?
                 .to_string(),
-            station_id: stops["NodeID"].as_i64().ok_or("NodeID is not an i64")? as i32,
+            id: stops["NodeID"].as_i64().ok_or("NodeID is not an i64")? as i32,
             station_name: to_title_case(
                 stops["NomeEstacao"]
                     .as_str()
